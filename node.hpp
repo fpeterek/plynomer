@@ -7,26 +7,18 @@
 
 
 #include <cstdint>
+#include <memory>
 #include "meter.hpp"
 
 
-class Node : public Meter {
-public:
-    void update() override;
-
-    void changeThroughput(const uint64_t newThroughput) override;
-
-    uint64_t throughput() override;
-
-    uint64_t total() override;
-
-private:
+class Node {
 
     std::vector<std::shared_ptr<Meter>> subnodes;
 
 public:
-
-
+    void update();
+    void changeThroughput(const uint64_t newThroughput);
+    uint64_t total();
 
 };
 

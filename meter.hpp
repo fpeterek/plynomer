@@ -11,22 +11,19 @@
 
 class Meter {
 
-    uint64_t _throughput;
-    uint64_t _total;
-    uint64_t _limit;
+    uint64_t _total = 0;
+    uint64_t brokenFor = 0;
+    uint64_t chanceToBreak = 5;
 
-protected:
-    std::random_device & rand;
+    void randomlyBreak();
+    void breakFor(const uint64_t cycles);
 
 public:
-    virtual void update();
-    virtual void changeThroughput(const uint64_t newThroughput);
-    virtual void changeLimit(const uint64_t limit);
-    virtual uint64_t throughput();
-    virtual uint64_t total();
-    virtual uint64_t limit();
-
-    Meter(std::random_device & rand);
+    uint64_t total();
+    void reset();
+    void set(const uint64_t newValue);
+    void increment(const uint64_t inc);
+    bool broken() const;
 
 };
 

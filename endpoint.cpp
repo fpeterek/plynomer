@@ -3,3 +3,9 @@
 //
 
 #include "endpoint.hpp"
+
+uint64_t Endpoint::total() {
+
+    return meter.total();
+
+}

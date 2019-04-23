@@ -9,7 +9,18 @@
 #include "meter.hpp"
 
 
-class Endpoint : public Meter {
+class Endpoint {
+
+    Meter meter;
+	
+	uint64_t _throughput;
+
+	virtual void changeThroughput(const uint64_t newThroughput);
+	virtual uint64_t throughput();
+
+public:
+    uint64_t total();
+
 
 };
 
