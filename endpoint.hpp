@@ -19,6 +19,7 @@ class Endpoint {
 	virtual uint64_t throughput();
 
 public:
+    
     uint64_t total();
 
 

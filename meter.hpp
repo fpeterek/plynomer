@@ -6,20 +6,18 @@
 #define PLYNOMER_METER_HPP
 
 #include <cstdint>
-#include <random>
-
 
 class Meter {
 
     uint64_t _total = 0;
-    uint64_t brokenFor = 0;
-    uint64_t chanceToBreak = 5;
+    uint64_t _brokenFor = 0;
+    const uint64_t _chanceToBreak = 5;
 
     void randomlyBreak();
     void breakFor(const uint64_t cycles);
 
 public:
-    uint64_t total();
+    uint64_t total() const;
     void reset();
     void set(const uint64_t newValue);
     void increment(const uint64_t inc);

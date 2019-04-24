@@ -6,21 +6,20 @@
 #include "random.hpp"
 
 void Meter::breakFor(const uint64_t hours) {
-    brokenFor = hours * 60;
+    _brokenFor = hours * 60;
 }
 
 void Meter::randomlyBreak() {
 
     uint64_t rand = Random::randInt(0, 99);
 
-    if (rand < chanceToBreak) {
+    if (rand < _chanceToBreak) {
         breakFor(Random::randInt(1, 240));
     }
 
 }
 
-uint64_t Meter::total() {
-    randomlyBreak();
+uint64_t Meter::total() const {
     return _total;
 }
 
@@ -49,6 +48,6 @@ void Meter::increment(const uint64_t inc) {
 }
 
 bool Meter::broken() const {
-    return not brokenFor;
+    return not _brokenFor;
 }
 

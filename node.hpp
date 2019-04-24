@@ -8,6 +8,9 @@
 
 #include <cstdint>
 #include <memory>
+#include <vector>
+#include <algorithm>
+#include <numeric>
 #include "meter.hpp"
 
 
