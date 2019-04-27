@@ -12,16 +12,16 @@
 #include <algorithm>
 #include <numeric>
 #include "meter.hpp"
+#include "network_element.hpp"
 
 
-class Node {
+class Node : NetworkElement {
 
-    std::vector<std::shared_ptr<Meter>> subnodes;
+    std::vector<std::shared_ptr<NetworkElement>> subnodes;
 
 public:
-    void update();
-    void changeThroughput(const uint64_t newThroughput);
-    uint64_t total();
+
+    Node(const uint64_t id);
 
 };
 

@@ -7,20 +7,22 @@
 
 
 #include "meter.hpp"
+#include "network_element.hpp"
+#include "customer.hpp"
 
 
-class Endpoint {
+class Endpoint : NetworkElement {
 
-    Meter meter;
-	
-	uint64_t _throughput;
+    Meter & meter;
+	Customer & customer;
 
-	virtual void changeThroughput(const uint64_t newThroughput);
-	virtual uint64_t throughput();
+	uint64_t _throughput = 0;
 
 public:
-    
-    uint64_t total();
+
+    virtual void changeThroughput(const uint64_t newThroughput);
+
+    Endpoint(Meter & meter, Customer & customer, const uint64_t id);
 
 
 };
