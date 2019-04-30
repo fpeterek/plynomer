@@ -11,6 +11,8 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
+#include <array>
+
 #include "meter.hpp"
 #include "network_element.hpp"
 
@@ -18,6 +20,14 @@
 class Node : NetworkElement {
 
     std::vector<std::shared_ptr<NetworkElement>> subnodes;
+    std::vector<uint64_t> desired;
+    uint64_t totalDesired;
+
+    std::array<Meter, 3> meters;
+
+    void measureThroughput(uint64_t throughput);
+    bool metersBroken();
+    void fixMeters();
 
 public:
 
@@ -31,6 +41,9 @@ public:
     void addNode(uint64_t id) override;
     void addEndpoint(Meter & meter, Customer & customer, uint64_t id) override;
     void removeNode(uint64_t id) override;
+
+    virtual void setMeter(uint64_t value) = 0;
+    virtual void checkMeters() = 0;
 
 };
 

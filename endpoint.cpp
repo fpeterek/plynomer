@@ -10,10 +10,14 @@ Endpoint::Endpoint(Meter & meter, Customer & customer, const uint64_t id)
     : NetworkElement(id), meter(meter), customer(customer) { }
 
 uint64_t Endpoint::cycle(const uint64_t available) {
+
     _throughput = available;
-    changeDesired();
     meter.increment(available);
+
+    changeDesired();
+
     return available;
+
 }
 
 uint64_t Endpoint::currentThroughput() const {
@@ -41,6 +45,14 @@ uint64_t Endpoint::total() const {
 
 std::shared_ptr<NetworkElement> Endpoint::getSubnode(uint64_t subnode) {
     return std::shared_ptr<NetworkElement>();
+}
+
+void Endpoint::setMeter(uint64_t value) {
+    meter.set(value);
+}
+
+void Endpoint::checkMeters() {
+    // Do nothing
 }
 
 void Endpoint::addNode(const uint64_t) {

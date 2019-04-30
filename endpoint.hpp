@@ -32,6 +32,8 @@ public:
     void addNode(uint64_t id) override;
     void addEndpoint(Meter & meter, Customer & customer, uint64_t id) override;
     void removeNode(uint64_t id) override;
+    void setMeter(uint64_t value) override;
+    void checkMeters() override;
 
 
     Endpoint(Meter & meter, Customer & customer, uint64_t id);

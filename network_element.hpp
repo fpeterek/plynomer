@@ -33,6 +33,8 @@ public:
     virtual void addNode(uint64_t id) = 0;
     virtual void addEndpoint(Meter & meter, Customer & customer, uint64_t id) = 0;
     virtual void removeNode(uint64_t id) = 0;
+    virtual void setMeter(uint64_t value) = 0;
+    virtual void checkMeters() = 0;
 
     uint64_t maxThroughput() const;
     uint64_t id() const;
