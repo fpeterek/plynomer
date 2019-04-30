@@ -14,13 +14,13 @@ class Meter {
     const uint64_t _chanceToBreak = 5;
 
     void randomlyBreak();
-    void breakFor(const uint64_t cycles);
+    void breakFor(uint64_t cycles);
 
 public:
     uint64_t total() const;
     void reset();
-    void set(const uint64_t newValue);
-    void increment(const uint64_t inc);
+    void set(uint64_t newValue);
+    void increment(uint64_t inc);
     bool broken() const;
 
 };

@@ -6,7 +6,7 @@
 #include "random.hpp"
 
 void Meter::breakFor(const uint64_t hours) {
-    _brokenFor = hours * 60;
+    _brokenFor = hours;
 }
 
 void Meter::randomlyBreak() {
@@ -14,7 +14,7 @@ void Meter::randomlyBreak() {
     uint64_t rand = Random::randInt(0, 99);
 
     if (rand < _chanceToBreak) {
-        breakFor(Random::randInt(1, 240));
+        breakFor(Random::randInt(1, 48));
     }
 
 }
@@ -26,7 +26,6 @@ uint64_t Meter::total() const {
 void Meter::reset() {
 
     randomlyBreak();
-    if (broken()) { return; }
     _total = 0;
 
 }
@@ -34,7 +33,6 @@ void Meter::reset() {
 void Meter::set(const uint64_t newValue) {
 
     randomlyBreak();
-    if (broken()) { return; }
     _total = newValue;
 
 }
@@ -42,7 +40,7 @@ void Meter::set(const uint64_t newValue) {
 void Meter::increment(const uint64_t inc) {
 
     randomlyBreak();
-    if (broken()) { return; }
+    if (broken()) { return 0; }
     _total += inc;
 
 }

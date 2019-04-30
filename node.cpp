@@ -4,21 +4,45 @@
 
 #include "node.hpp"
 
-uint64_t Node::total() {
 
-    auto fn = [&](uint64_t acc, std::shared_ptr<Meter> ptr) { return acc + ptr->total() };
-    return std::accumulate(subnodes.begin(), subnodes.end(), 0, fn);
+Node::Node(const uint64_t id) : NetworkElement(id) { }
+
+uint64_t Node::cycle(uint64_t available) {
+
+    uint64_t sum = 0;
+
+    for (auto & subnode : subnodes) {
+        sum += subnode->cycle();
+    }
+
+
 
 }
 
-void Node::update() {
+uint64_t Node::currentThroughput() const {
+    return 0;
+}
+
+uint64_t Node::desiredThroughput() {
+    return 0;
+}
+
+uint64_t Node::total() const {
+    return 0;
+}
+
+std::shared_ptr<NetworkElement> Node::getSubnode(uint64_t subnode) {
+    return std::shared_ptr<NetworkElement>();
+}
+
+void Node::addNode(uint64_t id) {
 
 }
 
-void Node::changeThroughput(const uint64_t newThroughput) {
-    Meter::changeThroughput(newThroughput);
+void Node::addEndpoint(Meter & meter, Customer & customer, uint64_t id) {
+
 }
 
-uint64_t Node::throughput() {
-    return Meter::throughput();
+void Node::removeNode(uint64_t id) {
+
 }

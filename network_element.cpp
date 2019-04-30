@@ -15,3 +15,5 @@ void NetworkElement::setMaxThroughput(const uint64_t newMax) {
 uint64_t NetworkElement::id() const {
     return _id;
 }
+
+NetworkElement::NetworkElement(const uint64_t id) : _id(id) { }

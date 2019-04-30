@@ -17,12 +17,24 @@ class Endpoint : NetworkElement {
 	Customer & customer;
 
 	uint64_t _throughput = 0;
+	uint64_t _desired = 0;
+
+	void changeDesired();
+
 
 public:
 
-    virtual void changeThroughput(const uint64_t newThroughput);
+    uint64_t cycle(uint64_t available) override;
+    uint64_t currentThroughput() const override;
+    uint64_t desiredThroughput() override;
+    uint64_t total() const override;
+    std::shared_ptr<NetworkElement> getSubnode(uint64_t subnode) override;
+    void addNode(uint64_t id) override;
+    void addEndpoint(Meter & meter, Customer & customer, uint64_t id) override;
+    void removeNode(uint64_t id) override;
 
-    Endpoint(Meter & meter, Customer & customer, const uint64_t id);
+
+    Endpoint(Meter & meter, Customer & customer, uint64_t id);
 
 
 };
