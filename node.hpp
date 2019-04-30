@@ -29,6 +29,10 @@ class Node : NetworkElement {
     bool metersBroken();
     void fixMeters();
 
+    void checkNodeIndex(uint64_t index, const std::string & msg) const;
+    void checkNodeExists(uint64_t id, const std::string & msg) const;
+    uint64_t getNodeIndex(uint64_t id) const;
+
 public:
 
     explicit Node(uint64_t id);
@@ -42,8 +46,8 @@ public:
     void addEndpoint(Meter & meter, Customer & customer, uint64_t id) override;
     void removeNode(uint64_t id) override;
 
-    virtual void setMeter(uint64_t value) = 0;
-    virtual void checkMeters() = 0;
+    void setMeter(uint64_t value) override;
+    void checkMeters() override;
 
 };
 
