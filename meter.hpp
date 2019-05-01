@@ -11,10 +11,12 @@ class Meter {
 
     uint64_t _total = 0;
     uint64_t _brokenFor = 0;
-    const uint64_t _chanceToBreak = 5;
+    const uint64_t _chanceToBreak = 1;
 
     void randomlyBreak();
     void breakFor(uint64_t cycles);
+
+    void fix();
 
 public:
     uint64_t total() const;

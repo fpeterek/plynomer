@@ -9,9 +9,17 @@ void Meter::breakFor(const uint64_t hours) {
     _brokenFor = hours;
 }
 
+void Meter::fix() {
+    --_brokenFor;
+}
+
 void Meter::randomlyBreak() {
 
-    uint64_t rand = Random::randInt(0, 99);
+    if (broken()) {
+        return;
+    }
+
+    const uint64_t rand = Random::randInt(0, 99);
 
     if (rand < _chanceToBreak) {
         breakFor(Random::randInt(1, 48));
@@ -24,28 +32,24 @@ uint64_t Meter::total() const {
 }
 
 void Meter::reset() {
-
-    randomlyBreak();
     _total = 0;
-
+    randomlyBreak();
 }
 
 void Meter::set(const uint64_t newValue) {
-
-    randomlyBreak();
     _total = newValue;
-
+    randomlyBreak();
 }
 
 void Meter::increment(const uint64_t inc) {
 
-    randomlyBreak();
-    if (broken()) { return 0; }
+    if (broken()) { return fix(); }
     _total += inc;
+    randomlyBreak();
 
 }
 
 bool Meter::broken() const {
-    return not _brokenFor;
+    return _brokenFor;
 }
 

@@ -7,6 +7,8 @@
 #include <functional>
 
 #include "../address.hpp"
+#include "../meter.hpp"
+
 
 #ifdef assert
 #undef assert
@@ -76,6 +78,33 @@ void addressTest() {
     }
 }
 
+void meterTest() {
+
+    constexpr uint64_t initial = 500;
+    constexpr uint64_t cycles = 3000;
+    constexpr uint64_t total = initial + cycles;
+
+    Meter meter;
+    meter.increment(initial);
+
+    uint64_t brokenFor = 0;
+
+    for (uint64_t i = 0; i < cycles; ++i) {
+
+        if (meter.broken()) {
+            ++brokenFor;
+        }
+        meter.increment(1);
+
+    }
+    std::cout << "Meter.total(): " << meter.total() << std::endl;
+    std::cout << "Meter was broken for " << brokenFor << " cycles" << std::endl;
+    assert(meter.total() == total - brokenFor);
+
+
+
+}
+
 std::vector<std::string> successfulTests;
 std::vector<std::string> unsuccessfulTests;
 
@@ -139,6 +168,7 @@ void test() {
 
     runTest(addressTest, "Address test");
     runTest(testTest, "Unit test test");
+    runTest(meterTest, "Meter test");
 
 }
 
