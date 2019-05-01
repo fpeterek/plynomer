@@ -5,6 +5,7 @@
 #include "distributor.hpp"
 #include "meter.hpp"
 #include "customer.hpp"
+#include "node.hpp"
 
 #include <numeric>
 
@@ -25,24 +26,8 @@ uint64_t Distributor::currentOutput() {
     return _currentOutput;
 }
 
-uint64_t Distributor::expectedRevenue() {
-    return _totalDistributed * _pricePerUnit;
-}
-
-uint64_t Distributor::actualRevenue() {
-    return _totalMeasured * _pricePerUnit;
-}
-
-uint64_t Distributor::price() {
-    return _pricePerUnit;
-}
-
 uint64_t Distributor::maxOutput() {
     return _maxOutput;
-}
-
-uint64_t Distributor::desired() {
-    return _desired;
 }
 
 void Distributor::changeMaxOutput(const uint64_t newOutput) {
@@ -75,24 +60,24 @@ uint64_t Distributor::getDesired() {
 void Distributor::distribute(const uint64_t desired) {
 
     const uint64_t produced = std::min(desired, _maxOutput);
+    const uint64_t consumed = mainNode->cycle(produced);
 
-    mainNode->cycle(produced);
+    _desiredLastDay += desired;
+    _producedLastDay += produced;
+    _consumedLastDay += consumed;
 
-    _totalDistributed += produced;
-    _currentOutput = produced;
-
-}
-
-void Distributor::update() {
-
-    _desired = getDesired();
-    distribute(_desired);
-    _totalMeasured = measure();
+    _totalDistributed += consumed;
+    _currentOutput = consumed;
 
 }
 
-void Distributor::updatePrice(const uint64_t newPrice) {
-    _pricePerUnit = newPrice;
+void Distributor::advanceOneDay() {
+
+    for (uint8_t i = 0; i < 24; ++i) {
+        distribute(getDesired());
+        _totalMeasured = measure();
+    }
+
 }
 
 void Distributor::addNode(const Address & address) {
@@ -114,4 +99,24 @@ void Distributor::removeNode(const Address & address) {
     auto parent = getParentFor(address);
     parent->removeNode(address.back());
 
+}
+
+uint64_t Distributor::lossInUnits() {
+    return _totalDistributed - _totalMeasured;
+}
+
+uint64_t Distributor::desiredLastDay() {
+    return _desiredLastDay;
+}
+
+uint64_t Distributor::producedLastDay() {
+    return _producedLastDay;
+}
+
+uint64_t Distributor::consumedLastDay() {
+    return _consumedLastDay;
+}
+
+Distributor::Distributor(uint64_t maxOutput) : _maxOutput(maxOutput) {
+    mainNode = std::make_shared<NetworkElement>(Node(0));
 }

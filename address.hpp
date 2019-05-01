@@ -23,6 +23,7 @@ public:
     uint64_t back() const;
 
     Address(const std::string & str);
+    Address(const char * str);
 
 };
 

@@ -10,9 +10,9 @@ Node::Node(const uint64_t id) : NetworkElement(id) { }
 
 void Node::fixMeters() {
 
-    uint64_t ref = meters.front().total();
+    uint64_t ref = _meters.front().total();
 
-    for (auto & meter : meters) {
+    for (auto & meter : _meters) {
         if (not meter.broken()) {
             ref = meter.total();
         }
@@ -26,7 +26,7 @@ bool Node::metersBroken() {
 
     bool broken = false;
 
-    for (auto & meter : meters) {
+    for (auto & meter : _meters) {
         broken = broken or meter.broken();
     }
 
@@ -34,9 +34,22 @@ bool Node::metersBroken() {
 
 }
 
+bool Node::meterBroken() {
+
+
+    for (auto & meter : _meters) {
+        if (not meter.broken()) {
+            return false;
+        }
+    }
+
+    return true;
+
+}
+
 void Node::measureThroughput(const uint64_t throughput) {
 
-    for (auto & meter : meters) {
+    for (auto & meter : _meters) {
         meter.increment(throughput);
     }
 
@@ -48,7 +61,7 @@ void Node::measureThroughput(const uint64_t throughput) {
 
 void Node::setMeter(const uint64_t value) {
 
-    for (auto & meter : meters) {
+    for (auto & meter : _meters) {
         meter.set(value);
     }
 
@@ -56,12 +69,12 @@ void Node::setMeter(const uint64_t value) {
 
 uint64_t Node::cycle(const uint64_t available) {
 
-    const double modifier = available / (double)totalDesired;
+    const double modifier = available / (double)_totalDesired;
 
     uint64_t total = 0;
 
-    for (size_t i = 0; i < subnodes.size(); ++i) {
-        total += subnodes[i]->cycle(desired[i] * modifier);
+    for (size_t i = 0; i < _subnodes.size(); ++i) {
+        total += _subnodes[i]->cycle(_desired[i] * modifier);
     }
 
     measureThroughput(total);
@@ -74,7 +87,7 @@ uint64_t Node::currentThroughput() const {
 
     uint64_t total = 0;
 
-    for (const auto & subnode : subnodes) {
+    for (const auto & subnode : _subnodes) {
         total += subnode->currentThroughput();
     }
 
@@ -84,32 +97,44 @@ uint64_t Node::currentThroughput() const {
 
 uint64_t Node::desiredThroughput() {
 
-    desired.clear();
-    desired.reserve(subnodes.size());
+    _desired.clear();
+    _desired.reserve(_subnodes.size());
 
-    totalDesired = 0;
+    _totalDesired = 0;
 
-    for (auto & subnode : subnodes) {
+    for (auto & subnode : _subnodes) {
 
         const uint64_t des = subnode->desiredThroughput();
-        desired.emplace_back(des);
-        totalDesired += des;
+        _desired.emplace_back(des);
+        _totalDesired += des;
 
     }
 
-    return totalDesired;
+    return _totalDesired;
 
 }
 
 uint64_t Node::total() const {
-    return 0;
+
+    uint64_t total = 0;
+
+    for (const auto & subnode : _subnodes) {
+        total += subnode->total();
+    }
+
+    return total;
+
+}
+
+size_t Node::subnodes() {
+    return _subnodes.size();
 }
 
 uint64_t Node::getNodeIndex(const uint64_t id) const {
 
     uint64_t index = 0;
 
-    for (const auto & node : subnodes) {
+    for (const auto & node : _subnodes) {
         if (node->id() == id) {
             return index;
         }
@@ -135,15 +160,12 @@ void Node::checkNodeExists(const uint64_t id, const std::string & msg) const {
 
 }
 
-
-
-
 std::shared_ptr<NetworkElement> Node::getSubnode(uint64_t subnode) {
 
     const uint64_t index = getNodeIndex(subnode);
     checkNodeIndex(index, "No such node exists.");
 
-    return subnodes[index];
+    return _subnodes[index];
 
 }
 
@@ -151,15 +173,15 @@ void Node::addNode(const uint64_t id) {
 
     checkNodeExists(id, "Such node already exists.");
 
-    subnodes.emplace_back(std::make_shared<Node>(Node(id)));
+    _subnodes.emplace_back(std::make_shared<Node>(Node(id)));
 
 }
 
-void Node::addEndpoint(Meter & meter, Customer & customer, const uint64_t id) {
+void Node::addEndpoint(Customer & customer, const uint64_t id) {
 
     checkNodeExists(id, "Such node already exists.");
 
-    subnodes.emplace_back(std::make_shared<Endpoint>(Endpoint(meter, customer, id)));
+    _subnodes.emplace_back(std::make_shared<Endpoint>(Endpoint(customer, id)));
 
 }
 
@@ -168,6 +190,6 @@ void Node::removeNode(const uint64_t id) {
     const uint64_t index = getNodeIndex(id);
     checkNodeIndex(index, "No such node exists.");
 
-    subnodes.erase(subnodes.begin() + index);
+    _subnodes.erase(_subnodes.begin() + index);
 
 }

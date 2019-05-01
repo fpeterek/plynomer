@@ -67,3 +67,5 @@ Address::Address(const std::string & str) {
         throw std::invalid_argument("Invalid address: " + str);
     }
 }
+
+Address::Address(const char * str) : Address(std::string(str)) { }

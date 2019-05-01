@@ -31,10 +31,12 @@ public:
     virtual uint64_t total() const = 0;
     virtual std::shared_ptr<NetworkElement> getSubnode(uint64_t subnode) = 0;
     virtual void addNode(uint64_t id) = 0;
-    virtual void addEndpoint(Meter & meter, Customer & customer, uint64_t id) = 0;
+    virtual void addEndpoint(Customer & customer, uint64_t id) = 0;
     virtual void removeNode(uint64_t id) = 0;
     virtual void setMeter(uint64_t value) = 0;
-    virtual void checkMeters() = 0;
+    virtual bool meterBroken() = 0;
+
+    virtual size_t subnodes() = 0;
 
     uint64_t maxThroughput() const;
     uint64_t id() const;

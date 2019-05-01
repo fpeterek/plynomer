@@ -14,12 +14,13 @@
 
 class Distributor {
 
-    uint64_t _currentOutput;
-    uint64_t _totalDistributed;
-    uint64_t _totalMeasured;
-    uint64_t _pricePerUnit;
-    uint64_t _maxOutput;
-    uint64_t _desired;
+    uint64_t _currentOutput = 0;
+    uint64_t _totalDistributed = 0;
+    uint64_t _totalMeasured = 0;
+    uint64_t _maxOutput = 0;
+    uint64_t _desiredLastDay = 0;
+    uint64_t _producedLastDay = 0;
+    uint64_t _consumedLastDay = 0;
 
     std::shared_ptr<NetworkElement> mainNode;
 
@@ -27,7 +28,7 @@ class Distributor {
 
     uint64_t getDesired();
 
-    void distribute(const uint64_t desired);
+    void distribute(uint64_t desired);
 
     std::shared_ptr<NetworkElement> getNode(const Address & address);
     std::shared_ptr<NetworkElement> getParentFor(const Address & address);
@@ -37,18 +38,19 @@ public:
     uint64_t totalDistributed();
     uint64_t totalMeasured();
     uint64_t currentOutput();
-    uint64_t expectedRevenue();
-    uint64_t actualRevenue();
-    uint64_t price();
     uint64_t maxOutput();
-    uint64_t desired();
+    uint64_t desiredLastDay();
+    uint64_t producedLastDay();
+    uint64_t consumedLastDay();
+    uint64_t lossInUnits();
 
-    void changeMaxOutput(const uint64_t newOutput);
-    void update();
-    void updatePrice(const uint64_t newPrice);
+    void changeMaxOutput(uint64_t newOutput);
+    void advanceOneDay();
     void addNode(const Address & address);
     void addEndpoint(const Address & address, Meter & meter, Customer & customer);
     void removeNode(const Address & address);
+
+    Distributor(uint64_t maxOutput);
 
 };
 

@@ -30,13 +30,14 @@ public:
     uint64_t total() const override;
     std::shared_ptr<NetworkElement> getSubnode(uint64_t subnode) override;
     void addNode(uint64_t id) override;
-    void addEndpoint(Meter & meter, Customer & customer, uint64_t id) override;
+    void addEndpoint(Customer & customer, uint64_t id) override;
     void removeNode(uint64_t id) override;
     void setMeter(uint64_t value) override;
-    void checkMeters() override;
+    bool meterBroken() override;
+    size_t subnodes() override;
 
 
-    Endpoint(Meter & meter, Customer & customer, uint64_t id);
+    Endpoint(Customer & customer, uint64_t id);
 
 
 };

@@ -8,6 +8,10 @@
 
 #include "../address.hpp"
 #include "../meter.hpp"
+#include "../random.hpp"
+#include "../customer.hpp"
+#include "../node.hpp"
+#include "../distributor.hpp"
 
 
 #ifdef assert
@@ -97,11 +101,41 @@ void meterTest() {
         meter.increment(1);
 
     }
-    std::cout << "Meter.total(): " << meter.total() << std::endl;
-    std::cout << "Meter was broken for " << brokenFor << " cycles" << std::endl;
+
     assert(meter.total() == total - brokenFor);
 
+    std::cout << "Meter.total(): " << meter.total() << std::endl;
+    std::cout << "Meter was broken for " << brokenFor << " cycles" << std::endl;
 
+}
+
+void randomTest() {
+
+    const uint64_t min = 54;
+    const uint64_t max = 213;
+
+    for (uint64_t i = 0; i < 100; ++i) {
+        const uint64_t rand = Random::randInt(min, max);
+        assert(54 <= rand and rand <= 213, "Random number outside bounds");
+    }
+
+}
+
+void treeTest() {
+
+    std::vector<Customer> customers;
+
+    Distributor dist(150);
+
+    dist.addNode("0");
+    dist.addNode("1");
+
+    dist.addNode("0:0");
+    dist.addNode("0:1");
+    dist.addNode("0:2");
+
+    dist.addNode("1:0");
+    dist.addNode("1:0:0");
 
 }
 
@@ -123,11 +157,8 @@ void runTest(const std::function<void(void)> & fun, const std::string & testName
         msg = e.what();
     }
 
-    if (success) {
-        successfulTests.emplace_back(testName);
-    } else {
-        unsuccessfulTests.emplace_back(testName);
-    }
+    auto & v = (success) ? successfulTests : unsuccessfulTests;
+    v.emplace_back(testName);
 
     std::endl(std::cout);
     std::cout << "Test result: " << (success ? "success" : "failure") << std::endl;
@@ -169,6 +200,8 @@ void test() {
     runTest(addressTest, "Address test");
     runTest(testTest, "Unit test test");
     runTest(meterTest, "Meter test");
+    runTest(randomTest, "Random test");
+    runTest(treeTest, "Tree test");
 
 }
 

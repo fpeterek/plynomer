@@ -6,17 +6,19 @@
 #include "random.hpp"
 
 
-Endpoint::Endpoint(Meter & meter, Customer & customer, const uint64_t id)
-    : NetworkElement(id), meter(meter), customer(customer) { }
+Endpoint::Endpoint(Customer & customer, const uint64_t id)
+    : NetworkElement(id), meter(customer.meter()), customer(customer) { }
 
 uint64_t Endpoint::cycle(const uint64_t available) {
 
-    _throughput = available;
-    meter.increment(available);
+    const uint64_t consumed = Random::randInt(available / 2, available);
+
+    _throughput = consumed;
+    meter.increment(consumed);
 
     changeDesired();
 
-    return available;
+    return consumed;
 
 }
 
@@ -35,6 +37,10 @@ void Endpoint::changeDesired() {
 
 }
 
+bool Endpoint::meterBroken() {
+    return meter.broken();
+}
+
 uint64_t Endpoint::desiredThroughput() {
     return _desired;
 }
@@ -51,18 +57,18 @@ void Endpoint::setMeter(uint64_t value) {
     meter.set(value);
 }
 
-void Endpoint::checkMeters() {
-    // Do nothing
-}
-
 void Endpoint::addNode(const uint64_t) {
     throw std::runtime_error("Cannot add subnodes to an endpoint");
 }
 
-void Endpoint::addEndpoint(Meter &, Customer &, const uint64_t) {
+void Endpoint::addEndpoint(Customer &, const uint64_t) {
     throw std::runtime_error("Cannot add subnodes to an endpoint");
 }
 
 void Endpoint::removeNode(const uint64_t) {
     throw std::runtime_error("Cannot remove subnodes from an endpoint");
+}
+
+size_t Endpoint::subnodes() {
+    return 0;
 }

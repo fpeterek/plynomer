@@ -19,11 +19,11 @@
 
 class Node : NetworkElement {
 
-    std::vector<std::shared_ptr<NetworkElement>> subnodes;
-    std::vector<uint64_t> desired;
-    uint64_t totalDesired;
+    std::vector<std::shared_ptr<NetworkElement>> _subnodes;
+    std::vector<uint64_t> _desired;
+    uint64_t _totalDesired;
 
-    std::array<Meter, 3> meters;
+    std::array<Meter, 3> _meters;
 
     void measureThroughput(uint64_t throughput);
     bool metersBroken();
@@ -33,6 +33,8 @@ class Node : NetworkElement {
     void checkNodeExists(uint64_t id, const std::string & msg) const;
     uint64_t getNodeIndex(uint64_t id) const;
 
+
+
 public:
 
     explicit Node(uint64_t id);
@@ -41,13 +43,14 @@ public:
     uint64_t currentThroughput() const override;
     uint64_t desiredThroughput() override;
     uint64_t total() const override;
+    size_t subnodes() override;
     std::shared_ptr<NetworkElement> getSubnode(uint64_t subnode) override;
     void addNode(uint64_t id) override;
-    void addEndpoint(Meter & meter, Customer & customer, uint64_t id) override;
+    void addEndpoint(Customer & customer, uint64_t id) override;
     void removeNode(uint64_t id) override;
+    bool meterBroken() override;
 
     void setMeter(uint64_t value) override;
-    void checkMeters() override;
 
 };
 
