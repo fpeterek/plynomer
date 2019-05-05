@@ -7,6 +7,7 @@
 
 
 #include <vector>
+#include <ostream>
 
 
 class Address {
@@ -26,6 +27,8 @@ public:
     Address(const char * str);
 
 };
+
+std::ostream & operator<<(std::ostream & os, const Address & ad);
 
 
 #endif //PLYNOMER_ADDRESS_HPP

@@ -17,7 +17,7 @@
 #include "network_element.hpp"
 
 
-class Node : NetworkElement {
+class Node : public NetworkElement {
 
     std::vector<std::shared_ptr<NetworkElement>> _subnodes;
     std::vector<uint64_t> _desired;
@@ -29,8 +29,11 @@ class Node : NetworkElement {
     bool metersBroken();
     void fixMeters();
 
+    bool nodeExists(uint64_t id) const;
+
     void checkNodeIndex(uint64_t index, const std::string & msg) const;
     void checkNodeExists(uint64_t id, const std::string & msg) const;
+    void checkNodeDoesntExist(uint64_t id, const std::string & msg) const;
     uint64_t getNodeIndex(uint64_t id) const;
 
 

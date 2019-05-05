@@ -11,7 +11,7 @@
 #include "customer.hpp"
 
 
-class Endpoint : NetworkElement {
+class Endpoint : public NetworkElement {
 
     Meter & meter;
 	Customer & customer;

@@ -69,3 +69,16 @@ Address::Address(const std::string & str) {
 }
 
 Address::Address(const char * str) : Address(std::string(str)) { }
+
+std::ostream & operator<<(std::ostream & os, const Address & ad) {
+
+    auto it = ad.begin();
+
+    while (it != ad.end()) {
+        os << *it << ":";
+        ++it;
+    }
+
+    return os;
+
+}

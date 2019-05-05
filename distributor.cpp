@@ -8,6 +8,7 @@
 #include "node.hpp"
 
 #include <numeric>
+#include <iostream>
 
 
 uint64_t Distributor::measure() {
@@ -74,7 +75,11 @@ void Distributor::distribute(const uint64_t desired) {
 void Distributor::advanceOneDay() {
 
     for (uint8_t i = 0; i < 24; ++i) {
-        distribute(getDesired());
+        std::cout << "asking" << std::endl;
+        uint64_t des = getDesired();
+        std::cout <<"distributing " << des << std::endl;
+        distribute(des);
+        std::cout << "measuring" << std::endl;
         _totalMeasured = measure();
     }
 
@@ -90,7 +95,7 @@ void Distributor::addNode(const Address & address) {
 void Distributor::addEndpoint(const Address & address, Meter & meter, Customer & customer) {
 
     auto parent = getParentFor(address);
-    parent->addEndpoint(meter, customer, address.back());
+    parent->addEndpoint(customer, address.back());
 
 }
 
@@ -118,5 +123,5 @@ uint64_t Distributor::consumedLastDay() {
 }
 
 Distributor::Distributor(uint64_t maxOutput) : _maxOutput(maxOutput) {
-    mainNode = std::make_shared<NetworkElement>(Node(0));
+    mainNode = std::make_shared<Node>(0);
 }

@@ -137,6 +137,33 @@ void treeTest() {
     dist.addNode("1:0");
     dist.addNode("1:0:0");
 
+    std::cout << "Infrastructure built, adding customers" << std::endl;
+
+    customers.emplace_back("1:2");
+    dist.addEndpoint("1:2", customers.back().meter(), customers.back());
+
+    customers.emplace_back("2");
+    dist.addEndpoint("2", customers.back().meter(), customers.back());
+
+    customers.emplace_back("0:1:0");
+    dist.addEndpoint("0:1:0", customers.back().meter(), customers.back());
+
+    customers.emplace_back("0:1:1");
+    dist.addEndpoint("0:1:1", customers.back().meter(), customers.back());
+
+    customers.emplace_back("0:1:2");
+    dist.addEndpoint("0:1:2", customers.back().meter(), customers.back());
+
+    customers.emplace_back("1:0:0:1");
+    dist.addEndpoint("1:0:0:1", customers.back().meter(), customers.back());
+
+    std::cout << "Measured: " << dist.totalMeasured() << std::endl;
+
+    std::cout << "Network built, attempting to advance" << std::endl;
+    dist.advanceOneDay();
+    std::cout << "Advanced successfully" << std::endl;
+    std::cout << "Desired: " << dist.desiredLastDay() << "\nConsumed: " << dist.consumedLastDay()
+              << "\nMeasured: " << dist.totalMeasured() << std::endl;
 }
 
 std::vector<std::string> successfulTests;

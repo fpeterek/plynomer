@@ -2,6 +2,7 @@
 // Created by Filip Peterek on 2019-04-23.
 //
 
+#include <iostream>
 #include "node.hpp"
 #include "endpoint.hpp"
 
@@ -72,6 +73,8 @@ uint64_t Node::cycle(const uint64_t available) {
     const double modifier = available / (double)_totalDesired;
 
     uint64_t total = 0;
+
+    std::cout << "node::cycle" << std::endl;
 
     for (size_t i = 0; i < _subnodes.size(); ++i) {
         total += _subnodes[i]->cycle(_desired[i] * modifier);
@@ -145,6 +148,10 @@ uint64_t Node::getNodeIndex(const uint64_t id) const {
 
 }
 
+bool Node::nodeExists(uint64_t id) const {
+    return getNodeIndex(id) != -1;
+}
+
 void Node::checkNodeIndex(uint64_t index, const std::string & msg) const {
 
     if (index == -1) {
@@ -155,8 +162,17 @@ void Node::checkNodeIndex(uint64_t index, const std::string & msg) const {
 
 void Node::checkNodeExists(const uint64_t id, const std::string & msg) const {
 
-    const uint64_t index = getNodeIndex(id);
-    checkNodeIndex(index, msg);
+    if (not nodeExists(id)) {
+        throw std::invalid_argument(msg);
+    }
+
+}
+
+void Node::checkNodeDoesntExist(uint64_t id, const std::string & msg) const {
+
+    if (nodeExists(id)) {
+        throw std::invalid_argument(msg);
+    }
 
 }
 
@@ -171,17 +187,15 @@ std::shared_ptr<NetworkElement> Node::getSubnode(uint64_t subnode) {
 
 void Node::addNode(const uint64_t id) {
 
-    checkNodeExists(id, "Such node already exists.");
-
-    _subnodes.emplace_back(std::make_shared<Node>(Node(id)));
+    checkNodeDoesntExist(id, "Such node already exists.");
+    _subnodes.emplace_back(std::make_shared<Node>(id));
 
 }
 
 void Node::addEndpoint(Customer & customer, const uint64_t id) {
 
-    checkNodeExists(id, "Such node already exists.");
-
-    _subnodes.emplace_back(std::make_shared<Endpoint>(Endpoint(customer, id)));
+    checkNodeDoesntExist(id, "Such node already exists.");
+    _subnodes.emplace_back(std::make_shared<Endpoint>(customer, id));
 
 }
 

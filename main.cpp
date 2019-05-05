@@ -1,7 +1,7 @@
 #include <iostream>
 #include <array>
 
-int main() {
+int mmmain() {
 
     std::cout << "Hello, world" << std::endl;
 

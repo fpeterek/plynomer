@@ -2,14 +2,22 @@
 // Created by Filip Peterek on 2019-04-23.
 //
 
+#include <iostream>
 #include "endpoint.hpp"
 #include "random.hpp"
 
 
 Endpoint::Endpoint(Customer & customer, const uint64_t id)
-    : NetworkElement(id), meter(customer.meter()), customer(customer) { }
+    : NetworkElement(id), meter(customer.meter()), customer(customer) {
+    // Calculate desired value based off of an initial basic value
+    _desired = 10;
+    changeDesired();
+}
 
 uint64_t Endpoint::cycle(const uint64_t available) {
+
+    std::cout << "endpoint::cycle" << std::endl;
+
 
     const uint64_t consumed = Random::randInt(available / 2, available);
 
@@ -31,7 +39,7 @@ void Endpoint::changeDesired() {
     const uint64_t min = _desired * 0.6;
     // +4 so there is always room to increase desired throughput
     // And avoid getting stuck on 0
-    const uint64_t max = _desired * 1.4 + 4;
+    const uint64_t max = std::min(_desired * 1.4 + 4, 100.0);
 
     _desired = Random::randInt(min, max);
 
@@ -42,6 +50,7 @@ bool Endpoint::meterBroken() {
 }
 
 uint64_t Endpoint::desiredThroughput() {
+    std::cout << "Desire: " << _desired << std::endl;
     return _desired;
 }
 

@@ -19,10 +19,10 @@ class Customer {
 
         public:
 
-        Customer(const std::string & address);
-        Customer(const std::string & address, const uint64_t maxPrice);
+        Customer(const std::string & address, uint64_t maxPrice = 15);
         Meter & meter();
-        bool acceptsPrice(const uint64_t price);
+        const Address & address() const;
+        bool acceptsPrice(uint64_t price);
 
 };
 
