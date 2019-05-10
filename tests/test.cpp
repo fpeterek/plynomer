@@ -12,6 +12,7 @@
 #include "../customer.hpp"
 #include "../node.hpp"
 #include "../distributor.hpp"
+#include "../endpoint.hpp"
 
 
 #ifdef assert
@@ -121,9 +122,42 @@ void randomTest() {
 
 }
 
+void endpointTest() {
+
+    std::vector<std::shared_ptr<Customer>> customers;
+    std::vector<std::shared_ptr<NetworkElement>> endpoints;
+    uint64_t produced = 0;
+    uint64_t consumed = 0;
+
+    for (uint64_t i = 0; i < 10; ++i) {
+        customers.emplace_back(std::make_shared<Customer>(std::to_string(i)));
+        endpoints.emplace_back(std::make_shared<Endpoint>(*customers.back(), i));
+    }
+
+    for (uint64_t i = 0; i < 10; ++i) {
+        for (auto & ptr : endpoints) {
+
+            const uint64_t desired = ptr->desiredThroughput();
+            const uint64_t cons = ptr->cycle(desired);
+            produced += desired;
+            consumed += cons;
+
+        }
+    }
+
+    uint64_t total = 0;
+    for (auto & ptr : endpoints) {
+        total += ptr->total();
+    }
+    std::cout << "Total consumed" << std::endl;
+    assert(total <= consumed, "Logged more than actually consumed");
+    assert(consumed <= produced, "Consumption cannot exceed production");
+
+}
+
 void treeTest() {
 
-    std::vector<Customer> customers;
+    std::vector<std::shared_ptr<Customer>> customers;
 
     Distributor dist(150);
 
@@ -139,25 +173,26 @@ void treeTest() {
 
     std::cout << "Infrastructure built, adding customers" << std::endl;
 
-    customers.emplace_back("1:2");
-    dist.addEndpoint("1:2", customers.back().meter(), customers.back());
+    dist.addNode("1:0:0:2");
+    dist.removeNode("1:0:0:2");
 
-    customers.emplace_back("2");
-    dist.addEndpoint("2", customers.back().meter(), customers.back());
+    customers.emplace_back(std::make_shared<Customer>("1:2"));
+    dist.addEndpoint("1:2", *customers.back());
 
-    customers.emplace_back("0:1:0");
-    dist.addEndpoint("0:1:0", customers.back().meter(), customers.back());
+    customers.emplace_back(std::make_shared<Customer>("2"));
+    dist.addEndpoint("2", *customers.back());
 
-    customers.emplace_back("0:1:1");
-    dist.addEndpoint("0:1:1", customers.back().meter(), customers.back());
+    customers.emplace_back(std::make_shared<Customer>("0:1:0"));
+    dist.addEndpoint("0:1:0", *customers.back());
 
-    customers.emplace_back("0:1:2");
-    dist.addEndpoint("0:1:2", customers.back().meter(), customers.back());
+    customers.emplace_back(std::make_shared<Customer>("0:1:1"));
+    dist.addEndpoint("0:1:1", *customers.back());
 
-    customers.emplace_back("1:0:0:1");
-    dist.addEndpoint("1:0:0:1", customers.back().meter(), customers.back());
+    customers.emplace_back(std::make_shared<Customer>("0:1:2"));
+    dist.addEndpoint("0:1:2", *customers.back());
 
-    std::cout << "Measured: " << dist.totalMeasured() << std::endl;
+    customers.emplace_back(std::make_shared<Customer>("1:0:0:1"));
+    dist.addEndpoint("1:0:0:1", *customers.back());
 
     std::cout << "Network built, attempting to advance" << std::endl;
     dist.advanceOneDay();
@@ -228,6 +263,7 @@ void test() {
     runTest(testTest, "Unit test test");
     runTest(meterTest, "Meter test");
     runTest(randomTest, "Random test");
+    runTest(endpointTest, "Endpoint test");
     runTest(treeTest, "Tree test");
 
 }

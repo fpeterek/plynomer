@@ -74,8 +74,6 @@ uint64_t Node::cycle(const uint64_t available) {
 
     uint64_t total = 0;
 
-    std::cout << "node::cycle" << std::endl;
-
     for (size_t i = 0; i < _subnodes.size(); ++i) {
         total += _subnodes[i]->cycle(_desired[i] * modifier);
     }
@@ -195,7 +193,8 @@ void Node::addNode(const uint64_t id) {
 void Node::addEndpoint(Customer & customer, const uint64_t id) {
 
     checkNodeDoesntExist(id, "Such node already exists.");
-    _subnodes.emplace_back(std::make_shared<Endpoint>(customer, id));
+    std::shared_ptr<NetworkElement> ptr = std::make_shared<Endpoint>(customer, id);
+    _subnodes.emplace_back(ptr);
 
 }
 

@@ -1,8 +1,8 @@
 #include <iostream>
 #include <array>
 
-int mmmain() {
+/*int main() {
 
     std::cout << "Hello, world" << std::endl;
 
-}
+}*/

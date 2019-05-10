@@ -14,7 +14,7 @@
 class Customer {
 
         const Address _address;
-        Meter _meter;
+        Meter * _meter;
         const uint64_t _maxPrice;
 
         public:

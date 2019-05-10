@@ -8,7 +8,7 @@
 
 
 Endpoint::Endpoint(Customer & customer, const uint64_t id)
-    : NetworkElement(id), meter(customer.meter()), customer(customer) {
+    : NetworkElement(id), customer(customer) {
     // Calculate desired value based off of an initial basic value
     _desired = 10;
     changeDesired();
@@ -16,13 +16,10 @@ Endpoint::Endpoint(Customer & customer, const uint64_t id)
 
 uint64_t Endpoint::cycle(const uint64_t available) {
 
-    std::cout << "endpoint::cycle" << std::endl;
-
-
     const uint64_t consumed = Random::randInt(available / 2, available);
 
     _throughput = consumed;
-    meter.increment(consumed);
+    customer.meter().increment(consumed);
 
     changeDesired();
 
@@ -46,16 +43,15 @@ void Endpoint::changeDesired() {
 }
 
 bool Endpoint::meterBroken() {
-    return meter.broken();
+    return customer.meter().broken();
 }
 
 uint64_t Endpoint::desiredThroughput() {
-    std::cout << "Desire: " << _desired << std::endl;
     return _desired;
 }
 
 uint64_t Endpoint::total() const {
-    return meter.total();
+    return customer.meter().total();
 }
 
 std::shared_ptr<NetworkElement> Endpoint::getSubnode(uint64_t subnode) {
@@ -63,7 +59,7 @@ std::shared_ptr<NetworkElement> Endpoint::getSubnode(uint64_t subnode) {
 }
 
 void Endpoint::setMeter(uint64_t value) {
-    meter.set(value);
+    customer.meter().set(value);
 }
 
 void Endpoint::addNode(const uint64_t) {

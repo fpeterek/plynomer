@@ -6,10 +6,10 @@
 
 
 Customer::Customer(const std::string & address, const uint64_t maxPrice)
-    : _address(address), _maxPrice(maxPrice) { }
+    : _address(address), _maxPrice(maxPrice), _meter(new Meter()) { }
 
 Meter & Customer::meter() {
-    return _meter;
+    return *_meter;
 }
 
 const Address & Customer::address() const {

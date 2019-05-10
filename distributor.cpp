@@ -44,7 +44,7 @@ std::shared_ptr<NetworkElement> Distributor::getNode(const Address & address) {
 std::shared_ptr<NetworkElement> Distributor::getParentFor(const Address & address) {
 
     auto it = address.begin();
-    auto node = mainNode;
+    std::shared_ptr<NetworkElement> node = mainNode;
 
     while (it != (address.end() - 1)) {
         node = node->getSubnode(*(it++));
@@ -75,11 +75,8 @@ void Distributor::distribute(const uint64_t desired) {
 void Distributor::advanceOneDay() {
 
     for (uint8_t i = 0; i < 24; ++i) {
-        std::cout << "asking" << std::endl;
         uint64_t des = getDesired();
-        std::cout <<"distributing " << des << std::endl;
         distribute(des);
-        std::cout << "measuring" << std::endl;
         _totalMeasured = measure();
     }
 
@@ -87,21 +84,21 @@ void Distributor::advanceOneDay() {
 
 void Distributor::addNode(const Address & address) {
 
-    auto parent = getParentFor(address);
+    std::shared_ptr<NetworkElement> parent = getParentFor(address);
     parent->addNode(address.back());
 
 }
 
-void Distributor::addEndpoint(const Address & address, Meter & meter, Customer & customer) {
+void Distributor::addEndpoint(const Address & address, Customer & customer) {
 
-    auto parent = getParentFor(address);
+    std::shared_ptr<NetworkElement> parent = getParentFor(address);
     parent->addEndpoint(customer, address.back());
 
 }
 
 void Distributor::removeNode(const Address & address) {
 
-    auto parent = getParentFor(address);
+    std::shared_ptr<NetworkElement> parent = getParentFor(address);
     parent->removeNode(address.back());
 
 }

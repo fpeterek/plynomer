@@ -47,10 +47,10 @@ public:
     void changeMaxOutput(uint64_t newOutput);
     void advanceOneDay();
     void addNode(const Address & address);
-    void addEndpoint(const Address & address, Meter & meter, Customer & customer);
+    void addEndpoint(const Address & address, Customer & customer);
     void removeNode(const Address & address);
 
-    Distributor(uint64_t maxOutput);
+    explicit Distributor(uint64_t maxOutput);
 
 };
 
