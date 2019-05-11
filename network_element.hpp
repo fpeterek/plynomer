@@ -7,6 +7,7 @@
 
 
 #include <cstdint>
+#include <sstream>
 #include <memory>
 #include "meter.hpp"
 #include "customer.hpp"
@@ -19,6 +20,8 @@ class NetworkElement {
 protected:
 
     const uint64_t _id;
+
+    static std::string indent(uint64_t depth);
 
 public:
 
@@ -34,7 +37,9 @@ public:
     virtual void addEndpoint(Customer & customer, uint64_t id) = 0;
     virtual void removeNode(uint64_t id) = 0;
     virtual void setMeter(uint64_t value) = 0;
+    virtual void print(std::ostream & os, uint64_t depth) const = 0;
     virtual bool meterBroken() = 0;
+    virtual bool isEndpoint() const = 0;
 
     virtual size_t subnodes() = 0;
 

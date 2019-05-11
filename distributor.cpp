@@ -63,9 +63,9 @@ void Distributor::distribute(const uint64_t desired) {
     const uint64_t produced = std::min(desired, _maxOutput);
     const uint64_t consumed = mainNode->cycle(produced);
 
-    _desiredLastDay += desired;
-    _producedLastDay += produced;
-    _consumedLastDay += consumed;
+    _desiredLastDay = desired;
+    _producedLastDay = produced;
+    _consumedLastDay = consumed;
 
     _totalDistributed += consumed;
     _currentOutput = consumed;
@@ -74,11 +74,9 @@ void Distributor::distribute(const uint64_t desired) {
 
 void Distributor::advanceOneDay() {
 
-    for (uint8_t i = 0; i < 24; ++i) {
-        uint64_t des = getDesired();
-        distribute(des);
-        _totalMeasured = measure();
-    }
+    uint64_t des = getDesired();
+    distribute(des);
+    _totalMeasured = measure();
 
 }
 
@@ -96,11 +94,23 @@ void Distributor::addEndpoint(const Address & address, Customer & customer) {
 
 }
 
-void Distributor::removeNode(const Address & address) {
+void Distributor::removeNode(const Address & address, const bool safe) {
 
     std::shared_ptr<NetworkElement> parent = getParentFor(address);
+
+    if (safe) {
+        auto node = parent->getSubnode(address.back());
+        if (node->isEndpoint()) {
+            throw std::runtime_error("Cannot remove endpoint in safe mode");
+        }
+    }
+
     parent->removeNode(address.back());
 
+}
+
+void Distributor::printNetwork(std::ostream & os) const {
+    mainNode->print(os, 0);
 }
 
 uint64_t Distributor::lossInUnits() {

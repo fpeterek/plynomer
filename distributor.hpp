@@ -44,11 +44,12 @@ public:
     uint64_t consumedLastDay();
     uint64_t lossInUnits();
 
+    void printNetwork(std::ostream & os) const;
     void changeMaxOutput(uint64_t newOutput);
     void advanceOneDay();
     void addNode(const Address & address);
     void addEndpoint(const Address & address, Customer & customer);
-    void removeNode(const Address & address);
+    void removeNode(const Address & address, bool safe = true);
 
     explicit Distributor(uint64_t maxOutput);
 

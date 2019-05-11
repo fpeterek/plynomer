@@ -206,3 +206,16 @@ void Node::removeNode(const uint64_t id) {
     _subnodes.erase(_subnodes.begin() + index);
 
 }
+
+void Node::print(std::ostream & os, const uint64_t depth) const {
+
+    os << indent(depth) << _id << "   Node" << "\n";
+    for (const auto & sub : _subnodes) {
+        sub->print(os, depth + 1);
+    }
+
+}
+
+bool Node::isEndpoint() const {
+    return false;
+}

@@ -5,17 +5,13 @@
 #include "customer.hpp"
 
 
-Customer::Customer(const std::string & address, const uint64_t maxPrice)
-    : _address(address), _maxPrice(maxPrice), _meter(new Meter()) { }
+Customer::Customer(const std::string & address)
+    : _address(address) { }
 
 Meter & Customer::meter() {
-    return *_meter;
+    return _meter;
 }
 
 const Address & Customer::address() const {
     return _address;
-}
-
-bool Customer::acceptsPrice(const uint64_t price) {
-    return price <= _maxPrice;
 }

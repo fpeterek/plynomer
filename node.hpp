@@ -52,8 +52,12 @@ public:
     void addEndpoint(Customer & customer, uint64_t id) override;
     void removeNode(uint64_t id) override;
     bool meterBroken() override;
+    void print(std::ostream & os, uint64_t depth) const override;
+    bool isEndpoint() const override;
+
 
     void setMeter(uint64_t value) override;
+
 
 };
 

@@ -59,6 +59,14 @@ uint64_t Address::back() const {
     return _address.back();
 }
 
+bool Address::operator==(const Address & add) const {
+    return _address == add._address;
+}
+
+bool Address::operator!=(const Address & add) const {
+    return _address != add._address;
+}
+
 Address::Address(const std::string & str) {
 
     try {

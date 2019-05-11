@@ -81,6 +81,14 @@ void addressTest() {
         }
 
     }
+
+    Address a1 = "1:2:3:4";
+    Address a2 = "1:2:3:4";
+    Address a3 = "1:2:3:5";
+
+    assert(a1 == a2, "Address comparison failed");
+    assert(a1 != a3, "Address comparison failed");
+
 }
 
 void meterTest() {

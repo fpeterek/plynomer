@@ -14,15 +14,16 @@
 class Customer {
 
         const Address _address;
-        Meter * _meter;
-        const uint64_t _maxPrice;
+        Meter _meter;
+        uint64_t _chargedFor = 0;
 
         public:
 
-        Customer(const std::string & address, uint64_t maxPrice = 15);
+        Customer(const std::string & address);
         Meter & meter();
         const Address & address() const;
-        bool acceptsPrice(uint64_t price);
+
+        friend class CustomerManager;
 
 };
 

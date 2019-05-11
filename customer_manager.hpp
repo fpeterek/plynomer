@@ -16,18 +16,26 @@
 
 class CustomerManager {
 
-    std::shared_ptr<Distributor> distributor;
-    std::vector<Customer> customers;
+    Distributor & distributor;
+    std::vector<std::shared_ptr<Customer>> customers;
+
+    uint64_t pricePerUnit = 0;
+    uint64_t _totalRevenue = 0;
+    uint64_t _revenueLastCycle = 0;
+
+    uint64_t chargeCustomer(Customer & customer);
 
 public:
 
-    void updatePrice(const uint64_t newPrice);
-    void updateDistributor(std::shared_ptr<Distributor> dist);
+    explicit CustomerManager(Distributor & dist);
 
-    void addCustomer();
+    void updatePrice(uint64_t newPrice);
+    void addCustomer(const std::string & address);
     void removeCustomer(const std::string & address);
 
-
+    uint64_t chargeCustomers();
+    uint64_t totalRevenue();
+    uint64_t revenueLastCycle();
 
 };
 

@@ -1,8 +1,7 @@
 #include <iostream>
-#include <array>
 
-/*int main() {
+#include "app.hpp"
 
-    std::cout << "Hello, world" << std::endl;
-
-}*/
+int main() {
+    App().run();
+}

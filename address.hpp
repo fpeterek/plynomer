@@ -23,6 +23,10 @@ public:
     uint64_t front() const;
     uint64_t back() const;
 
+    bool operator==(const Address & add) const;
+    bool operator!=(const Address & add) const;
+
+
     Address(const std::string & str);
     Address(const char * str);
 

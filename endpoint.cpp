@@ -5,12 +5,13 @@
 #include <iostream>
 #include "endpoint.hpp"
 #include "random.hpp"
+#include "config.hpp"
 
 
 Endpoint::Endpoint(Customer & customer, const uint64_t id)
     : NetworkElement(id), customer(customer) {
     // Calculate desired value based off of an initial basic value
-    _desired = 10;
+    _desired = Config::initialDesired;
     changeDesired();
 }
 
@@ -36,7 +37,7 @@ void Endpoint::changeDesired() {
     const uint64_t min = _desired * 0.6;
     // +4 so there is always room to increase desired throughput
     // And avoid getting stuck on 0
-    const uint64_t max = std::min(_desired * 1.4 + 4, 100.0);
+    const uint64_t max = std::min(_desired * 1.4 + 2, (double)Config::maxConsumption);
 
     _desired = Random::randInt(min, max);
 
@@ -76,4 +77,12 @@ void Endpoint::removeNode(const uint64_t) {
 
 size_t Endpoint::subnodes() {
     return 0;
+}
+
+void Endpoint::print(std::ostream & os, uint64_t depth) const {
+    os << indent(depth) << _id << "   Endpoint" << "\n";
+}
+
+bool Endpoint::isEndpoint() const {
+    return true;
 }

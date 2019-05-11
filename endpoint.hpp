@@ -34,6 +34,8 @@ public:
     void setMeter(uint64_t value) override;
     bool meterBroken() override;
     size_t subnodes() override;
+    void print(std::ostream & os, uint64_t depth) const override;
+    bool isEndpoint() const override;
 
 
     Endpoint(Customer & customer, uint64_t id);

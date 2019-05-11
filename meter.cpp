@@ -4,6 +4,8 @@
 
 #include "meter.hpp"
 #include "random.hpp"
+#include "config.hpp"
+
 
 void Meter::breakFor(const uint64_t hours) {
     _brokenFor = hours;
@@ -21,7 +23,7 @@ void Meter::randomlyBreak() {
 
     const uint64_t rand = Random::randInt(0, 99);
 
-    if (rand < _chanceToBreak) {
+    if (rand < Config::meterChanceToBreak) {
         breakFor(Random::randInt(1, 48));
     }
 
