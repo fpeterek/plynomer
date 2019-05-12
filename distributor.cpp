@@ -74,7 +74,7 @@ void Distributor::distribute(const uint64_t desired) {
 
 void Distributor::advanceOneDay() {
 
-    uint64_t des = getDesired();
+    const uint64_t des = getDesired();
     distribute(des);
     _totalMeasured = measure();
 

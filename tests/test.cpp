@@ -142,7 +142,7 @@ void endpointTest() {
         endpoints.emplace_back(std::make_shared<Endpoint>(*customers.back(), i));
     }
 
-    for (uint64_t i = 0; i < 10; ++i) {
+    for (uint64_t i = 0; i < 100; ++i) {
         for (auto & ptr : endpoints) {
 
             const uint64_t desired = ptr->desiredThroughput();
@@ -157,13 +157,61 @@ void endpointTest() {
     for (auto & ptr : endpoints) {
         total += ptr->total();
     }
-    std::cout << "Total consumed" << std::endl;
+    std::cout << "Total consumed " << total << std::endl;
     assert(total <= consumed, "Logged more than actually consumed");
     assert(consumed <= produced, "Consumption cannot exceed production");
 
 }
 
 void treeTest() {
+
+    std::shared_ptr<NetworkElement> root = std::make_shared<Node>(0);
+
+    root->addNode(1);
+    root->addNode(2);
+    root->addNode(3);
+
+    root->getSubnode(1)->addNode(1);
+    root->getSubnode(1)->addNode(2);
+    root->getSubnode(1)->addNode(3);
+
+    root->getSubnode(2)->addNode(1);
+
+    std::vector<std::shared_ptr<Customer>> customers;
+
+    customers.emplace_back(std::make_shared<Customer>("1:1:1"));
+    root->getSubnode(1)->getSubnode(1)->addEndpoint(*customers.back(), 1);
+
+    customers.emplace_back(std::make_shared<Customer>("1:2:1"));
+    root->getSubnode(1)->getSubnode(2)->addEndpoint(*customers.back(), 1);
+
+    customers.emplace_back(std::make_shared<Customer>("1:2:2"));
+    root->getSubnode(1)->getSubnode(2)->addEndpoint(*customers.back(), 2);
+
+    customers.emplace_back(std::make_shared<Customer>("1:2:3"));
+    root->getSubnode(1)->getSubnode(2)->addEndpoint(*customers.back(), 3);
+
+    customers.emplace_back(std::make_shared<Customer>("2:1:1"));
+    root->getSubnode(2)->getSubnode(1)->addEndpoint(*customers.back(), 1);
+
+    uint64_t consumed = 0;
+    uint64_t desired = 0;
+
+    for (uint64_t i = 0; i < 30; ++i) {
+
+        const uint64_t des = root->desiredThroughput();
+        consumed += root->cycle(des);
+        desired += des;
+
+    }
+
+    std::cout << "Total desired: "  << desired  << "\n"
+              << "Total consumed: " << consumed << "\n"
+              << "Total measured: " << root->total() << std::endl;
+
+}
+
+void distributorTest() {
 
     std::vector<std::shared_ptr<Customer>> customers;
 
@@ -175,9 +223,13 @@ void treeTest() {
     dist.addNode("0:0");
     dist.addNode("0:1");
     dist.addNode("0:2");
+    dist.addNode("0:3");
+    dist.addNode("0:4");
+    dist.addNode("0:5");
 
     dist.addNode("1:0");
     dist.addNode("1:0:0");
+    dist.addNode("1:0:2");
 
     std::cout << "Infrastructure built, adding customers" << std::endl;
 
@@ -189,6 +241,9 @@ void treeTest() {
 
     customers.emplace_back(std::make_shared<Customer>("2"));
     dist.addEndpoint("2", *customers.back());
+
+    customers.emplace_back(std::make_shared<Customer>("3"));
+    dist.addEndpoint("3", *customers.back());
 
     customers.emplace_back(std::make_shared<Customer>("0:1:0"));
     dist.addEndpoint("0:1:0", *customers.back());
@@ -203,10 +258,23 @@ void treeTest() {
     dist.addEndpoint("1:0:0:1", *customers.back());
 
     std::cout << "Network built, attempting to advance" << std::endl;
-    dist.advanceOneDay();
-    std::cout << "Advanced successfully" << std::endl;
-    std::cout << "Desired: " << dist.desiredLastDay() << "\nConsumed: " << dist.consumedLastDay()
-              << "\nMeasured: " << dist.totalMeasured() << std::endl;
+
+    uint64_t totalDesired = 0;
+    uint64_t totalConsumed = 0;
+
+    for (uint64_t i = 0; i < 30; ++i) {
+        dist.advanceOneDay();
+        totalConsumed += dist.consumedLastDay();
+        totalDesired += dist.desiredLastDay();
+    }
+
+    const uint64_t totalMeasured = dist.totalMeasured();
+
+    std::cout << "Advanced successfully"       << "\n"
+              << "Desired: "  << totalDesired  << "\n"
+              << "Consumed: " << totalConsumed << "\n"
+              << "Measured: " << totalMeasured << "\n"
+              << "Losses: "   << totalConsumed - totalMeasured << std::endl;
 }
 
 std::vector<std::string> successfulTests;
@@ -258,6 +326,7 @@ void summary() {
     std::cout << "Tests total: " << unsuccessfulTests.size() + successfulTests.size() << std::endl;
     std::cout << "Successful tests total: " << successfulTests.size() << std::endl;
     std::cout << "Unsuccessful tests total: " << unsuccessfulTests.size() << std::endl;
+    std::cout << "\n" << std::endl;
 
 }
 
@@ -273,6 +342,7 @@ void test() {
     runTest(randomTest, "Random test");
     runTest(endpointTest, "Endpoint test");
     runTest(treeTest, "Tree test");
+    runTest(distributorTest, "Distributor test");
 
 }
 

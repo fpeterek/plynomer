@@ -25,6 +25,10 @@ void Holding::increaseProduction() {
 
 void Holding::checkProductionNeeds() {
 
+    if (_desiredLastMonth == 0) {
+        return;
+    }
+
     const double prodDesRatio = _producedLastMonth / (double)_desiredLastMonth;
     const double consProdRatio = _consumedLastMonth / (double)_producedLastMonth;
 

@@ -13,7 +13,7 @@
 
 class Endpoint : public NetworkElement {
 
-	Customer & customer;
+    Customer & customer;
 
 	uint64_t _throughput = 0;
 	uint64_t _desired = 0;

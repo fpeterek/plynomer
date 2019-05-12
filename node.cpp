@@ -70,12 +70,17 @@ void Node::setMeter(const uint64_t value) {
 
 uint64_t Node::cycle(const uint64_t available) {
 
+    if (not _totalDesired) {
+        return 0;
+    }
+
     const double modifier = available / (double)_totalDesired;
 
     uint64_t total = 0;
 
     for (size_t i = 0; i < _subnodes.size(); ++i) {
-        total += _subnodes[i]->cycle(_desired[i] * modifier);
+        const uint64_t x = std::min(_desired[i] * modifier, (double)_desired[i]);
+        total += _subnodes[i]->cycle(x);
     }
 
     measureThroughput(total);

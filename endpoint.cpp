@@ -17,6 +17,11 @@ Endpoint::Endpoint(Customer & customer, const uint64_t id)
 
 uint64_t Endpoint::cycle(const uint64_t available) {
 
+    if (not _desired) {
+        changeDesired();
+        return 0;
+    }
+
     const uint64_t consumed = Random::randInt(available / 2, available);
 
     _throughput = consumed;
