@@ -24,7 +24,7 @@ void Meter::randomlyBreak() {
     const uint64_t rand = Random::randInt(0, 99);
 
     if (rand < Config::meterChanceToBreak) {
-        breakFor(Random::randInt(1, 48));
+        breakFor(Random::randInt(Config::brokenMeterLowerBoundInDays, Config::brokenMeterUpperBoundInDays));
     }
 
 }

@@ -16,10 +16,13 @@ namespace Config {
     const uint64_t daysInMonth = 30;
     const uint64_t meterChanceToBreak = 1;
     const uint64_t spacesToIndent = 2;
+    const uint64_t brokenMeterLowerBoundInDays = 1;
+    const uint64_t brokenMeterUpperBoundInDays = 30;
 
     const double producedDesiredRatioThreshhold = 1.0;
     const double consumedProducedRatioThreshhold = 0.9;
     const double maxProductionIncreaseModifier = 1.3;
+
 }
 
 #endif //PLYNOMER_CONFIG_HPP
